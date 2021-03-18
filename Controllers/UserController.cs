@@ -1,3 +1,4 @@
+using gotodo_api.Attributes;
 using gotodo_api.Exceptions;
 using gotodo_api.Models;
 using gotodo_api.Repositories;
@@ -5,9 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace gotodo_api.Controllers
 {
+    [ApiKeyAttribute]
     [ApiController]
     [Route("[controller]")]
-    public class UserController
+    public class UserController : ControllerBase
     {
         private IUserRepository _repository;
 
@@ -27,7 +29,7 @@ namespace gotodo_api.Controllers
             catch (UserNotFoundException)
             {
                 System.Console.WriteLine("User was not found!");
-                return null;
+                return NotFound();
             }
 
         }
@@ -43,7 +45,7 @@ namespace gotodo_api.Controllers
             catch (UserNotCreatedException)
             {
                 System.Console.WriteLine("User could not be created!");
-                return null;
+                return NotFound();
             }
         }
     }

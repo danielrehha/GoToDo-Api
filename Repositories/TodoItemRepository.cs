@@ -16,7 +16,7 @@ namespace gotodo_api.Repositories
             _context = context;
         }
 
-        public TodoItem CreateTodoItem(string userId, TodoItem todoItem)
+        public TodoItem Create(string userId, TodoItem todoItem)
         {
             var newItem = new TodoItem(
                 id: 0,
@@ -30,16 +30,18 @@ namespace gotodo_api.Repositories
             _context.SaveChanges();
 
             var result = _context.todoItems.Find(todoItem.Id);
-            
+
             if (result != null)
             {
                 return result;
-            } else {
+            }
+            else
+            {
                 throw new ItemNotCreatedException();
             }
         }
 
-        public List<TodoItem> GetAllTodoItems(string userId)
+        public List<TodoItem> All(string userId)
         {
             var user = _context.users.Find(userId);
             if (user != null)
@@ -50,6 +52,38 @@ namespace gotodo_api.Repositories
             else
             {
                 throw new UserNotFoundException();
+            }
+        }
+        public TodoItem Delete(int Id)
+        {
+            var item = _context.todoItems.Find(Id);
+            if (item != null)
+            {
+                _context.todoItems.Remove(item);
+                _context.SaveChanges();
+                item.Done = true;
+                return item;
+            }
+            else
+            {
+                throw new ItemNotFoundException();
+            }
+        }
+
+        public TodoItem Edit(TodoItem todoItem, int Id)
+        {
+            var item = _context.todoItems.Find(Id);
+            if (item != null)
+            {
+                item.Title = todoItem.Title;
+                item.Due = todoItem.Due;
+                _context.todoItems.Update(item);
+                _context.SaveChanges();
+                return item;
+            }
+            else
+            {
+                throw new ItemNotFoundException();
             }
         }
     }
